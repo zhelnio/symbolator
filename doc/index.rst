@@ -49,11 +49,7 @@ Symbolator can render to PNG bitmap images or SVG, PDF, PS, and EPS vector image
 Requirements
 ------------
 
-Symbolator requires either Python 2.7 or Python 3.x, Pycairo, and Pango.
-
-The installation script depends on setuptools. The source is written in
-Python 2.7 syntax but will convert cleanly to Python 3 when the installer
-passes it through 2to3.
+Symbolator requires Python 3.x, Pycairo, and Pango. Symbolator no longer supports Python 2.x.
 
 The Pango library is used compute the dimensions of a text layout. There is no standard package to get the Pango Python bindings installed. It is a part of the Gtk+ library which is accessed either through the PyGtk or PyGObject APIs, both of which are supported by Symbolator. You should make sure that one of these libraries is available before installing Symbolator. A `Windows installer <http://www.pygtk.org/downloads.html>`_ is available. For Linux distributions you should install the relevant libraries with your package manager.
 
@@ -107,11 +103,7 @@ On Linux systems you may need to install with root privileges using the *sudo* c
 
 After a successful install the Symbolator command line application will be available. On Linux they should be immediately accessible from your current search path. On Windows you will need to make sure that the ``<Python root>\Scripts`` directory is in your %PATH% environment variable.
 
-If you can't use the installer script, it is possible to use ``symbolator.py`` directly without installation. If you need to use Python 3 you can manually convert it with the ``2to3`` tool:
-
-.. code-block:: sh
-
-  > 2to3 -w symbolator.py
+If you can't use the installer script, it is possible to use ``symbolator.py`` directly without installation using Python 3.x.
 
 Command line
 ------------
@@ -174,7 +166,7 @@ You can remove type information outside the symbol by passing the ``--no-type`` 
 Using Symbolator
 ----------------
 
-The VHDL parser will only extract component declarations inside a package. Entity declarations and nested components are ignored. All Verilog modules will be extracted. Both 1995 and 2001 syntax is suported. VHDL generics and Verilog parameters are supported. They render as a separate gray block with inputs. 
+The VHDL parser will only extract component declarations inside a package. Entity declarations and nested components are ignored. All Verilog modules will be extracted. Both 1995 and 2001 syntax is suported. VHDL generics and Verilog parameters are supported. They render as a separate gray block with inputs.
 
 .. code-block:: verilog
 
