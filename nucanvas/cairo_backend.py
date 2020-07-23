@@ -5,6 +5,7 @@
 
 import os
 import math
+import gi
 
 import cairo
 from .shapes import *
@@ -14,7 +15,9 @@ try:
   import pangocairo
   use_pygobject = False
 except ImportError:
+  gi.require_version('Pango', '1.0')
   from gi.repository import Pango as pango
+  gi.require_version('PangoCairo', '1.0')
   from gi.repository import PangoCairo as pangocairo
   use_pygobject = True
 
