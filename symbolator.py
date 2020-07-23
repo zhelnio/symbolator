@@ -401,7 +401,7 @@ def parse_args():
     args.format = args.format.lower()
 
   if args.input == '-' and args.output is None: # Reading from stdin: must have full output file name
-    print('Error: output file is required')
+    print('Error: Output file is required when reading from stdin')
     sys.exit(1)
 
   args.scale = float(args.scale)
@@ -486,6 +486,7 @@ def main():
 
 
   if args.input is None:
+    print("Error: Please provide a proper input file")
     sys.exit(0)
 
   if args.input == '-': # Read from stdin
@@ -517,7 +518,7 @@ def main():
     # Output is a directory
 
   else:
-    print('ERROR: Invalid input source')
+    print('Error: Invalid input source')
     sys.exit(1)
 
   if args.output:
