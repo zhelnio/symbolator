@@ -21,7 +21,7 @@ Symbolator is a component diagramming tool for VHDL and Verilog. It will parse H
         --# {{clocks|}}
         Clock : in std_ulogic;
         Reset : in std_ulogic;
-        
+
         --# {{control|Named section}}
         Enable : in std_ulogic;
         Data_in : in std_ulogic_vector(SIZE-1 downto 0);
@@ -39,7 +39,7 @@ Symbolator is a component diagramming tool for VHDL and Verilog. It will parse H
 	    -> demo_device-demo_device.svg
 
 Produces the following:
- 
+
 .. image:: http://kevinpt.github.io/symbolator/_images/demo_device-demo_device.svg
 
 
@@ -72,5 +72,3 @@ Documentation
 
 The full documentation is available online at the `main Symbolator site
 <http://kevinpt.github.io/symbolator/>`_.
-
-

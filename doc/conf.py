@@ -122,7 +122,7 @@ html_sidebars = {
         'projects.html',
         'searchbox.html'
     ],
-    
+
     'index': [
         'about.html',
         'download.html',
@@ -192,6 +192,3 @@ texinfo_documents = [
      author, 'Symbolator', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-

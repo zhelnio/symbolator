@@ -20,7 +20,7 @@ Symbolator is a component diagramming tool for VHDL and Verilog. It will parse H
         --# {{clocks|}}
         Clock : in std_ulogic;
         Reset : in std_ulogic;
-        
+
         --# {{control|Named section}}
         Enable : in std_ulogic;
         Data_in : in std_ulogic_vector(SIZE-1 downto 0);
@@ -38,7 +38,7 @@ Symbolator is a component diagramming tool for VHDL and Verilog. It will parse H
 	    -> demo_device-demo_device.svg
 
 Produces the following:
- 
+
 .. figure:: images/demo_device-demo_device.svg
   :align: center
 
@@ -172,21 +172,21 @@ The VHDL parser will only extract component declarations inside a package. Entit
 
   module vlog_params
     (foo, bar);
-    
+
     parameter PARAM1 = 1, PARAM2 = 2;
-    
+
     input wire foo;
     output reg bar;
   endmodule;
 
 .. symbolator::
   :name: param-example
-  
+
   module vlog_params
     (foo, bar);
-    
+
     parameter PARAM1 = 1, PARAM2 = 2;
-    
+
     input wire foo;
     output reg bar;
   endmodule;
@@ -199,11 +199,11 @@ Symbol pins can have edge sensitivity triangles and inversion bubbles. They are 
 Clocks
 
   "clock" or "clk" at the beginning or end of the name (``(^cl(oc)?k)|(cl(oc)?k$)``)
-  
+
 Inversion (active low)
 
   "_n" or "_b" at the end of the name (``_[nb]$``)
-  
+
 Bidirectional pins are rendered with double arrows. Inputs are always on the left. Outputs and bidirectional pins are on the right. Pins are kept in the same order they appear in each section.
 
 .. code-block:: vhdl
@@ -252,7 +252,7 @@ Pins with VHDL array types will be rendered as a bus. If the range is explicitly
 
 .. symbolator::
   :name: bus-detect
-  
+
   subtype word is unsigned(7 downto 0);
 
   component busses is
@@ -278,7 +278,7 @@ You can save scanned array definitions to a cached file with the ``-s`` option. 
   > symbolator -L my/vhdl/library -L . -s libs.txt
   > symbolator -L libs.txt -i source/path
 
-  
+
 Symbol sections
 ~~~~~~~~~~~~~~~
 
@@ -288,16 +288,16 @@ Each symbol can be split into sections with an optional name and styling class. 
 
   -- Empty section:
   --# {{}}
-  
+
   -- Styled section:
   --# {{clocks|}}
-  
+
   -- Named section:
   --# {{Arbitrary name}}
-  
+
   -- Styled and named:
   --# {{data|Input port}}
-  
+
 The fixed style names are "clocks", "control", and "data". They always have the same fill colors to maintain consistency across symbols. Any other sections are assigned a pastel color from a pseudo-random sequence.
 
 
@@ -307,16 +307,16 @@ The fixed style names are "clocks", "control", and "data". They always have the 
     port (
       --# {{clocks|Clocking}}
       Clock : in std_ulogic;
-      
+
       --# {{control|Control signals}}
       Enable: in std_ulogic;
-      
+
       --# {{data|Data port}}
       Data1 : in std_ulogic;
-      
+
       --# {{Additional port1}}
       Data2 : out std_ulogic;
-      
+
       --# {{}}
       Data3 : inout std_ulogic
     );
@@ -330,16 +330,16 @@ The fixed style names are "clocks", "control", and "data". They always have the 
     port (
       --# {{clocks|Clocking}}
       Clock : in std_ulogic;
-      
+
       --# {{control|Control signals}}
       Enable: in std_ulogic;
-      
+
       --# {{data|Data port}}
       Data1 : in std_ulogic;
-      
+
       --# {{Additional port1}}
       Data2 : out std_ulogic;
-      
+
       --# {{}}
       Data3 : inout std_ulogic
     );
@@ -373,7 +373,7 @@ A Symbolator extension is available for the Sphinx document generation system. I
 .. code-block:: rst
 
   .. symbolator::
-  
+
     component foo is
       ...
     end component;
@@ -411,10 +411,10 @@ Images are named by default with a SHA1 hash of the code and settings used to ge
     :caption: Caption text
     :symbolator_cmd: /usr/local/bin/symbolator
     :name: vlog-example
-  
+
     module vlog
       (foo, bar);
-      
+
       input wire foo;
       output reg bar;
     endmodule;
@@ -428,7 +428,7 @@ Images are named by default with a SHA1 hash of the code and settings used to ge
 
   module vlog
     (foo, bar);
-    
+
     input wire foo;
     output reg bar;
   endmodule;
@@ -451,14 +451,14 @@ symbolator_cmd
 symbolator_cmd_args
 
   List of arguments to pass on each invocation of Symbolator
-  
+
 symbolator_output_format
 
   Change the default output format. Only PNG and SVG are supported by the Sphinx extension.
 
 
 .. code-block:: python
-  
+
   symbolator_cmd = '/usr/local/bin/symbolator'
   symbolator_cmd_args = ['-t', '--scale=0.5']
   symbolator_output_format = 'png'  # 'svg' is other format
@@ -468,4 +468,3 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`search`
-

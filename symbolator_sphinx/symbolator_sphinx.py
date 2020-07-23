@@ -5,7 +5,7 @@
 
     Allow symbolator-formatted graphs to be included in Sphinx-generated
     documents inline.
-    
+
     Derived from sphinx.ext.graphviz.
 
     :copyright: Copyright 2007-2017 by the Sphinx team, see AUTHORS.
@@ -121,7 +121,7 @@ class Symbolator(Directive):
             node['alt'] = self.options['alt']
         if 'align' in self.options:
             node['align'] = self.options['align']
-            
+
         if 'name' in self.options:
           node['options']['name'] = self.options['name']
 
@@ -164,7 +164,7 @@ def render_symbol(self, code, options, format, prefix='symbol'):
     cmd_args = [symbolator_cmd]
     cmd_args.extend(self.builder.config.symbolator_cmd_args)
     cmd_args.extend(['-i', '-', '-f', format, '-o', outfn])
-    
+
     try:
         p = Popen(cmd_args, stdout=PIPE, stdin=PIPE, stderr=PIPE)
     except OSError as err:
@@ -320,4 +320,3 @@ def setup(app):
     app.add_config_value('symbolator_cmd_args', ['-t'], 'html')
     app.add_config_value('symbolator_output_format', 'svg', 'html')
     return {'version': '1.0', 'parallel_read_safe': True}
-

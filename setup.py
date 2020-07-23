@@ -58,4 +58,3 @@ setup(name='symbolator',
         'License :: OSI Approved :: MIT License'
         ]
     )
-

@@ -12,24 +12,24 @@ def rounded_corner(start, apex, end, rad):
   # Translate all points with apex at origin
   start = (start[0] - apex[0], start[1] - apex[1])
   end = (end[0] - apex[0], end[1] - apex[1])
-  
+
   # Get angles of each line segment
   enter_a = math.atan2(start[1], start[0]) % math.radians(360)
   leave_a = math.atan2(end[1], end[0]) % math.radians(360)
-  
+
   #print('## enter, leave', math.degrees(enter_a), math.degrees(leave_a))
-  
+
   # Determine bisector angle
   ea2 = abs(enter_a - leave_a)
   if ea2 > math.radians(180):
     ea2 = math.radians(360) - ea2
   bisect = ea2 / 2.0
-  
+
   if bisect > math.radians(82): # Nearly colinear: Skip radius
     return (apex, apex, apex, -1)
-  
+
   q = rad * math.sin(math.radians(90) - bisect) / math.sin(bisect)
-  
+
   # Check that q is no more than half the shortest leg
   enter_leg = math.sqrt(start[0]**2 + start[1]**2)
   leave_leg = math.sqrt(end[0]**2 + end[1]**2)
@@ -38,9 +38,9 @@ def rounded_corner(start, apex, end, rad):
     q = short_leg / 2
     # Compute new radius
     rad = q * math.sin(bisect) / math.sin(math.radians(90) - bisect)
-    
+
   h = math.sqrt(q**2 + rad**2)
-  
+
   # Center of circle
 
   # Determine which direction is the smallest angle to the leave point
@@ -54,11 +54,11 @@ def rounded_corner(start, apex, end, rad):
 
   #print('## Bisect2', math.degrees(bisect))
   center = (h * math.cos(bisect) + apex[0], h * math.sin(bisect) + apex[1])
-  
+
   # Find start and end point of arcs
   start_p = (q * math.cos(enter_a) + apex[0], q * math.sin(enter_a) + apex[1])
   end_p = (q * math.cos(leave_a) + apex[0], q * math.sin(leave_a) + apex[1])
-  
+
   return (center, start_p, end_p, rad)
 
 def rotate_bbox(box, a):
@@ -67,13 +67,13 @@ def rotate_bbox(box, a):
   a = -math.radians(a)
   sa = math.sin(a)
   ca = math.cos(a)
-  
+
   rot = []
   for p in corners:
     rx = p[0]*ca + p[1]*sa
     ry = -p[0]*sa + p[1]*ca
     rot.append((rx,ry))
-  
+
   # Find the extrema of the rotated points
   rot = list(zip(*rot))
   rx0 = min(rot[0])
@@ -82,7 +82,7 @@ def rotate_bbox(box, a):
   ry1 = max(rot[1])
 
   #print('## RBB:', box, rot)
-    
+
   return (rx0, ry0, rx1, ry1)
 
 
@@ -94,15 +94,15 @@ class BaseSurface(object):
     self.scale = scale
     self.draw_bbox = False
     self.markers = {}
-    
+
     self.shape_drawers = {}
-    
+
   def add_shape_class(self, sclass, drawer):
     self.shape_drawers[sclass] = drawer
-    
+
   def render(self, canvas, transparent=False):
     pass
-    
+
   def text_bbox(self, text, font_params, spacing):
     pass
 
@@ -129,7 +129,7 @@ class BaseShape(object):
   def __init__(self, options, **kwargs):
     self.options = {} if options is None else options
     self.options.update(kwargs)
-    
+
     self._bbox = [0,0,1,1]
     self.tags = set()
 
@@ -148,7 +148,7 @@ class BaseShape(object):
     x1 = max(self._bbox[0], self._bbox[2])
     y0 = min(self._bbox[1], self._bbox[3])
     y1 = max(self._bbox[1], self._bbox[3])
-    
+
     x0 -= w
     x1 += w
     y0 -= w
@@ -240,18 +240,18 @@ class GroupShape(BaseShape):
     self._bbox = None
     self.shapes = []
     self.surf = surf # Needed for TextShape to get font metrics
-    
+
 #    self.parent = None
 #    if 'parent' in options:
 #      self.parent = options['parent']
 #      del options['parent']
-    
+
     self.update_tags()
-    
+
   def ungroup(self):
     if self.parent is None:
       return # Can't ungroup top level canvas group
-    
+
     x, y = self._pos
     for s in self.shapes:
       s.move(x, y)
@@ -264,17 +264,17 @@ class GroupShape(BaseShape):
 
     # Remove this group
     self.parent.shapes = pshapes[:pos] + self.shapes + pshapes[pos+1:]
-    
+
   def ungroup_all(self):
     for s in self.shapes:
       if isinstance(s, GroupShape):
         s.ungroup_all()
-    self.ungroup()    
-    
+    self.ungroup()
+
   def move(self, dx, dy):
     BaseShape.move(self, dx, dy)
     self._pos = (self._pos[0] + dx, self._pos[1] + dy)
-    
+
   def create_shape(self, sclass, x0, y0, x1, y1, **options):
     options['parent'] = self
     shape = sclass(x0, y0, x1, y1, options)
@@ -310,11 +310,11 @@ class GroupShape(BaseShape):
     return self.create_shape(RectShape, x0, y0, x1, y1, **options)
 
   def create_text(self, x0, y0, **options):
-  
+
     # Must set default font now so we can use its metrics to get bounding box
     if 'font' not in options:
       options['font'] = self.surf.def_styles.font
-  
+
     shape = TextShape(x0, y0, self.surf, options)
     self.shapes.append(shape)
     self._bbox = None # Invalidate memoized box
@@ -324,14 +324,14 @@ class GroupShape(BaseShape):
     shape.tags.add(id_tag)
     #return id_tag # FIXME
     return shape
-    
+
   def create_path(self, nodes, **options):
     shape = PathShape(nodes, options)
     self.shapes.append(shape)
     self._bbox = None # Invalidate memoized box
     return shape
 
-    
+
   @property
   def bbox(self):
     if self._bbox is None:
@@ -347,20 +347,20 @@ class GroupShape(BaseShape):
         by0 = min(boxes[1])
         bx1 = max(boxes[2])
         by1 = max(boxes[3])
-        
+
       if 'scale' in self.options:
         sx = sy = self.options['scale']
         bx0 *= sx
         by0 *= sy
         bx1 *= sx
         by1 *= sy
-        
+
       if 'angle' in self.options:
         bx0, by0, bx1, by1 = rotate_bbox((bx0, by0, bx1, by1), self.options['angle'])
 
       tx, ty = self._pos
       self._bbox = [bx0+tx, by0+ty, bx1+tx, by1+ty]
-      
+
     return self._bbox
 
   def dump_shapes(self, indent=0):
@@ -406,7 +406,7 @@ class ArcShape(BaseShape):
     lw = self.param('weight')
     if lw is None:
       lw = 0
-      
+
     lw /= 2.0
 
     # Calculate bounding box for arc segment
@@ -474,7 +474,7 @@ class PathShape(BaseShape):
       elif len(p) == 5: # Arc
         extrema.append(p[0:2])
         extrema.append(p[2:4])
-        
+
     extrema = list(zip(*extrema))
     x0 = min(extrema[0])
     y0 = min(extrema[1])
@@ -503,17 +503,17 @@ class TextShape(BaseShape):
       options['spacing'] = -8
     if 'anchor' not in options:
       options['anchor'] = 'c'
-      
+
     spacing = options['spacing']
 
     bx0,by0, bx1,by1, baseline = surf.text_bbox(options['text'], options['font'], spacing)
     w = bx1 - bx0
     h = by1 - by0
-    
+
     self._baseline = baseline
     self._bbox = [x0, y0, x0+w, y0+h]
     self._anchor_off = self.anchor_offset
-    
+
     self.update_tags()
 
   @property
@@ -559,17 +559,17 @@ class TextShape(BaseShape):
     anchorh, anchorv = self.anchor_decode
     ax = 0
     ay = 0
-    
+
     if 'n' in anchorv:
       ay = hh + (spacing // 2)
     elif 's' in anchorv:
       ay = -hh - (spacing // 2)
-    
+
     if 'e' in anchorh:
       ax = -hw
     elif 'w' in anchorh:
       ax = hw
-      
+
     # Convert from center to upper-left corner
     return (ax - hw, ay - hh)
 
@@ -590,7 +590,7 @@ class DoubleRectShape(BaseShape):
 def cairo_draw_DoubleRectShape(shape, surf):
   c = surf.ctx
   x0, y0, x1, y1 = shape.points
-  
+
   c.rectangle(x0,y0, x1-x0,y1-y0)
 
   stroke = True if shape.options['weight'] > 0 else False
@@ -609,4 +609,3 @@ def cairo_draw_DoubleRectShape(shape, surf):
 
     c.rectangle(x0+4,y0+4, x1-x0-8,y1-y0-8)
     c.stroke()
-

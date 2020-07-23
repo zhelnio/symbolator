@@ -51,9 +51,9 @@ def visit_shapes(s, f):
 class SvgSurface(BaseSurface):
   def __init__(self, fname, def_styles, padding=0, scale=1.0):
     BaseSurface.__init__(self, fname, def_styles, padding, scale)
-    
+
     self.fh = None
-    
+
   svg_header = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created by Symbolator http://kevinpt.github.io/symbolator -->
 <svg xmlns="http://www.w3.org/2000/svg"
@@ -79,13 +79,13 @@ width="{}" height="{}" viewBox="{}" version="1.1">
   def render(self, canvas, transparent=False):
     x0,y0,x1,y1 = canvas.bbox('all')
     self.markers = canvas.markers
-    
+
     W = x1 - x0 + 2*self.padding
     H = y1 - y0 + 2*self.padding
-    
+
     x0 = int(x0)
     y0 = int(y0)
-    
+
     # Reposition all shapes in the viewport
 #    for s in canvas.shapes:
 #      s.move(-x0 + self.padding, -y0 + self.padding)
@@ -165,7 +165,7 @@ width="{}" height="{}" viewBox="{}" version="1.1">
       mh = my1 - my0
 
       # Unfortunately it looks like browser SVG rendering doesn't properly support
-      # marker viewBox that doesn't have an origin at 0,0 but Eye of Gnome does. 
+      # marker viewBox that doesn't have an origin at 0,0 but Eye of Gnome does.
 
       attrs = {
         'id': mname,
@@ -228,7 +228,7 @@ width="{}" height="{}" viewBox="{}" version="1.1">
   @staticmethod
   def draw_text(x, y, text, css_class, text_color, baseline, anchor, anchor_off, spacing, fh):
     ah, av = anchor
-    
+
     if ah == 'w':
       text_anchor = 'normal'
     elif ah == 'e':
@@ -256,7 +256,7 @@ width="{}" height="{}" viewBox="{}" version="1.1">
     if fh is None:
       fh = self.fh
     default_pen = rgb_to_hex(self.def_styles.line_color)
-    
+
     attrs = {
       'stroke': 'none',
       'fill': 'none'
@@ -266,9 +266,9 @@ width="{}" height="{}" viewBox="{}" version="1.1">
     fill = shape.param('fill', self.def_styles)
     line_color = shape.param('line_color', self.def_styles)
     #line_cap = cairo_line_cap(shape.param('line_cap', self.def_styles))
-    
+
     stroke = True if weight > 0 else False
-    
+
     if weight > 0:
       attrs['stroke-width'] = weight
 
@@ -278,8 +278,8 @@ width="{}" height="{}" viewBox="{}" version="1.1">
           attrs['stroke-opacity'] = line_color[3] / 255.0
       else:
         attrs['stroke'] = default_pen
-      
-      
+
+
     if fill is not None:
       attrs['fill'] = rgb_to_hex(fill)
       if len(fill) == 4:
@@ -291,42 +291,42 @@ width="{}" height="{}" viewBox="{}" version="1.1">
     # Draw custom shapes
     if shape.__class__ in self.shape_drawers:
       self.shape_drawers[shape.__class__](shape, self)
-    
+
     # Draw standard shapes
     elif isinstance(shape, GroupShape):
       tform = ['translate({},{})'.format(*shape._pos)]
-      
+
       if 'scale' in shape.options:
         tform.append('scale({})'.format(shape.options['scale']))
       if 'angle' in shape.options:
         tform.append('rotate({})'.format(shape.options['angle']))
 
       fh.write('<g transform="{}">\n'.format(' '.join(tform)))
-      
+
       for s in shape.shapes:
         self.draw_shape(s)
-      
+
       fh.write('</g>\n')
 
     elif isinstance(shape, TextShape):
       x0, y0, x1, y1 = shape.points
       baseline = shape._baseline
-      
-      text = shape.param('text', self.def_styles)      
+
+      text = shape.param('text', self.def_styles)
       font = shape.param('font', self.def_styles)
       text_color = shape.param('text_color', self.def_styles)
       #anchor = shape.param('anchor', self.def_styles).lower()
       spacing = shape.param('spacing', self.def_styles)
       css_class = shape.param('css_class')
-      
+
       anchor = shape.anchor_decode
       anchor_off = shape._anchor_off
       SvgSurface.draw_text(x0, y0, text, css_class, text_color, baseline, anchor, anchor_off, spacing, fh)
-      
+
 
     elif isinstance(shape, LineShape):
       x0, y0, x1, y1 = shape.points
-      
+
       marker = shape.param('marker')
       marker_start = shape.param('marker_start')
       marker_seg = shape.param('marker_segment')
@@ -338,16 +338,16 @@ width="{}" height="{}" viewBox="{}" version="1.1">
           marker_end = marker
         if marker_seg is None:
           marker_seg = marker
-          
+
       adjust = shape.param('marker_adjust')
       if adjust is None:
         adjust = 0
-        
+
       if adjust > 0:
         angle = math.atan2(y1-y0, x1-x0)
         dx = math.cos(angle)
         dy = math.sin(angle)
-        
+
         if marker_start in self.markers:
           # Get bbox of marker
           m_shape, ref, orient, units = self.markers[marker_start]
@@ -355,7 +355,7 @@ width="{}" height="{}" viewBox="{}" version="1.1">
           soff = (ref[0] - mx0) * adjust
           if units == 'stroke' and weight > 0:
             soff *= weight
-          
+
           # Move start point
           x0 += soff * dx
           y0 += soff * dy
@@ -367,7 +367,7 @@ width="{}" height="{}" viewBox="{}" version="1.1">
           eoff = (mx1 - ref[0]) * adjust
           if units == 'stroke' and weight > 0:
             eoff *= weight
-          
+
           # Move end point
           x1 -= eoff * dx
           y1 -= eoff * dy
@@ -387,7 +387,7 @@ width="{}" height="{}" viewBox="{}" version="1.1">
 
     elif isinstance(shape, RectShape):
       x0, y0, x1, y1 = shape.points
-      
+
       attributes = ' '.join(['{}="{}"'.format(k,v) for k,v in attrs.items()])
 
       fh.write('<rect x="{}" y="{}" width="{}" height="{}" {}/>\n'.format(
@@ -400,7 +400,7 @@ width="{}" height="{}" viewBox="{}" version="1.1">
       w = abs(x1 - x0)
       h = abs(y1 - y0)
       rad = min(w,h)
-      
+
       attributes = ' '.join(['{}="{}"'.format(k,v) for k,v in attrs.items()])
       fh.write('<ellipse cx="{}" cy="{}" rx="{}" ry="{}" {}/>\n'.format(xc, yc,
               w/2.0, h/2.0, attributes))
@@ -436,7 +436,7 @@ width="{}" height="{}" viewBox="{}" version="1.1">
       sflag = 0 if extent >= 0 else 1
 
       attributes = ' '.join(['{}="{}"'.format(k,v) for k,v in attrs.items()])
-      
+
 #      fh.write(u'<circle cx="{}" cy="{}" r="6" fill="{}" />\n'.format(xc, yc, rgb_to_hex((255,0,255))))
 #      fh.write(u'<circle cx="{}" cy="{}" r="6" fill="{}" />\n'.format(xs, ys, rgb_to_hex((0,0,255))))
 #      fh.write(u'<circle cx="{}" cy="{}" r="6" fill="{}" />\n'.format(xe, ye, rgb_to_hex((0,255,255))))
@@ -461,7 +461,7 @@ width="{}" height="{}" viewBox="{}" version="1.1">
         elif len(n) == 5: # Arc (javascript arcto() args)
           #print('# arc:', pp)
           #pp = self.draw_rounded_corner(pp, n[0:2], n[2:4], n[4], c)
-          
+
           center, start_p, end_p, rad = rounded_corner(pp, n[0:2], n[2:4], n[4])
           if rad < 0: # No arc
             print('## Rad < 0')
@@ -473,12 +473,12 @@ width="{}" height="{}" viewBox="{}" version="1.1">
             oend_p = (end_p[0] - center[0], end_p[1] - center[1])
             start_a = math.atan2(ostart_p[1], ostart_p[0]) % math.radians(360)
             end_a = math.atan2(oend_p[1], oend_p[0]) % math.radians(360)
-            
+
             # Determine direction of arc
             # Rotate whole system so that start_a is on x-axis
             # Then if delta < 180 cw  if delta > 180 ccw
             delta = (end_a - start_a) % math.radians(360)
-            
+
             if delta < math.radians(180): # CW
               sflag = 1
             else: # CCW
@@ -493,9 +493,8 @@ width="{}" height="{}" viewBox="{}" version="1.1">
             #            math.degrees(delta))
             #fh.write(u'<circle cx="{}" cy="{}" r="{}" stroke="#F00" stroke-width="1" fill="none"/>\n'.format(center[0], center[1], rad))
           pp = end_p
-          
+
           #print('# pp:', pp)
 
       attributes = ' '.join(['{}="{}"'.format(k,v) for k,v in attrs.items()])
       fh.write('<path d="{}" {}/>\n'.format(' '.join(nl), attributes))
-
