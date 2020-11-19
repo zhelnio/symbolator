@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # Copyright © 2017 Kevin Thibedeau
 # Distributed under the terms of the MIT license
-from __future__ import print_function
 
-from shapes import GroupShape, DrawStyle
+
+from .shapes import GroupShape, DrawStyle
 
 
 class NuCanvas(GroupShape):
@@ -14,13 +14,13 @@ class NuCanvas(GroupShape):
   def __init__(self, surf):
     GroupShape.__init__(self, surf, 0, 0, {})
     self.markers = {}
-    
+
   def set_surface(self, surf):
     self.surf = surf
-    
+
   def clear_shapes(self):
     self.shapes = []
-    
+
   def _get_shapes(self, item=None):
     # Filter shapes
     if item is None or item == 'all':
@@ -29,10 +29,9 @@ class NuCanvas(GroupShape):
       shapes = [s for s in self.shapes if s.is_tagged(item)]
     return shapes
 
-
   def render(self, transparent):
     self.surf.render(self, transparent)
-    
+
   def add_marker(self, name, shape, ref=(0,0), orient='auto', units='stroke'):
     self.markers[name] = (shape, ref, orient, units)
 
@@ -83,17 +82,17 @@ class NuCanvas(GroupShape):
 
 if __name__ == '__main__':
 
-  from svg_backend import SvgSurface
-  from cairo_backend import CairoSurface
-  from shapes import PathShape
+  from .svg_backend import SvgSurface
+  from .cairo_backend import CairoSurface
+  from .shapes import PathShape
 
   #surf = CairoSurface('nc.png', DrawStyle(), padding=5, scale=2)
   surf = SvgSurface('nc.svg', DrawStyle(), padding=5, scale=2)
-  
+
   #surf.add_shape_class(DoubleRectShape, cairo_draw_DoubleRectShape)
-  
+
   nc = NuCanvas(surf)
-  
+
 
   nc.add_marker('arrow_fwd',
     PathShape(((0,-4), (2,-1, 2,1, 0,4), (8,0), 'z'), fill=(0,0,0, 120), width=0),
@@ -123,7 +122,7 @@ if __name__ == '__main__':
 #  arc = nc.create_arc(*abox, start=-45, extent=170, width=4, line_color=(255,0,0), fill=(0,255,0,127))
 #  abb = arc.bbox
 #  nc.create_rectangle(*abb, width=1)
-#  
+#
 #  nc.create_path([(14,14), (30,4), (150,-60, 190,110, 140,110), (20,120), 'z'], fill=(255,100,0,127), width=2)
 #
 #  nc.create_path([(20,40), (30,70), (40,120, 60,50, 10), (60, 50, 80,90, 10), (80, 90, 150,89, 15),
@@ -147,10 +146,9 @@ if __name__ == '__main__':
 
   nc.create_oval(50-2,80-2, 50+2,80+2, width=0, fill=(255,0,0))
   nc.create_text(50,80, text='Hello world', anchor='nw', font=('Helvetica', 14, 'normal'), text_color=(0,0,0), spacing=-8)
-  
+
   nc.create_oval(50-2,100-2, 50+2,100+2, width=0, fill=(255,0,0))
   nc.create_text(50,100, text='Hello world', anchor='ne')
 
   surf.draw_bbox = True
   nc.render()
-  

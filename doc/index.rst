@@ -20,7 +20,7 @@ Symbolator is a component diagramming tool for VHDL and Verilog. It will parse H
         --# {{clocks|}}
         Clock : in std_ulogic;
         Reset : in std_ulogic;
-        
+
         --# {{control|Named section}}
         Enable : in std_ulogic;
         Data_in : in std_ulogic_vector(SIZE-1 downto 0);
@@ -38,7 +38,7 @@ Symbolator is a component diagramming tool for VHDL and Verilog. It will parse H
 	    -> demo_device-demo_device.svg
 
 Produces the following:
- 
+
 .. figure:: images/demo_device-demo_device.svg
   :align: center
 
@@ -49,11 +49,7 @@ Symbolator can render to PNG bitmap images or SVG, PDF, PS, and EPS vector image
 Requirements
 ------------
 
-Symbolator requires either Python 2.7 or Python 3.x, Pycairo, and Pango.
-
-The installation script depends on setuptools. The source is written in
-Python 2.7 syntax but will convert cleanly to Python 3 when the installer
-passes it through 2to3.
+Symbolator requires Python 3.x, Pycairo, and Pango. Symbolator no longer supports Python 2.x.
 
 The Pango library is used compute the dimensions of a text layout. There is no standard package to get the Pango Python bindings installed. It is a part of the Gtk+ library which is accessed either through the PyGtk or PyGObject APIs, both of which are supported by Symbolator. You should make sure that one of these libraries is available before installing Symbolator. A `Windows installer <http://www.pygtk.org/downloads.html>`_ is available. For Linux distributions you should install the relevant libraries with your package manager.
 
@@ -107,11 +103,7 @@ On Linux systems you may need to install with root privileges using the *sudo* c
 
 After a successful install the Symbolator command line application will be available. On Linux they should be immediately accessible from your current search path. On Windows you will need to make sure that the ``<Python root>\Scripts`` directory is in your %PATH% environment variable.
 
-If you can't use the installer script, it is possible to use ``symbolator.py`` directly without installation. If you need to use Python 3 you can manually convert it with the ``2to3`` tool:
-
-.. code-block:: sh
-
-  > 2to3 -w symbolator.py
+If you can't use the installer script, it is possible to use ``symbolator.py`` directly without installation using Python 3.x.
 
 Command line
 ------------
@@ -174,27 +166,27 @@ You can remove type information outside the symbol by passing the ``--no-type`` 
 Using Symbolator
 ----------------
 
-The VHDL parser will only extract component declarations inside a package. Entity declarations and nested components are ignored. All Verilog modules will be extracted. Both 1995 and 2001 syntax is suported. VHDL generics and Verilog parameters are supported. They render as a separate gray block with inputs. 
+The VHDL parser will only extract component declarations inside a package. Entity declarations and nested components are ignored. All Verilog modules will be extracted. Both 1995 and 2001 syntax is suported. VHDL generics and Verilog parameters are supported. They render as a separate gray block with inputs.
 
 .. code-block:: verilog
 
   module vlog_params
     (foo, bar);
-    
+
     parameter PARAM1 = 1, PARAM2 = 2;
-    
+
     input wire foo;
     output reg bar;
   endmodule;
 
 .. symbolator::
   :name: param-example
-  
+
   module vlog_params
     (foo, bar);
-    
+
     parameter PARAM1 = 1, PARAM2 = 2;
-    
+
     input wire foo;
     output reg bar;
   endmodule;
@@ -207,11 +199,11 @@ Symbol pins can have edge sensitivity triangles and inversion bubbles. They are 
 Clocks
 
   "clock" or "clk" at the beginning or end of the name (``(^cl(oc)?k)|(cl(oc)?k$)``)
-  
+
 Inversion (active low)
 
   "_n" or "_b" at the end of the name (``_[nb]$``)
-  
+
 Bidirectional pins are rendered with double arrows. Inputs are always on the left. Outputs and bidirectional pins are on the right. Pins are kept in the same order they appear in each section.
 
 .. code-block:: vhdl
@@ -260,7 +252,7 @@ Pins with VHDL array types will be rendered as a bus. If the range is explicitly
 
 .. symbolator::
   :name: bus-detect
-  
+
   subtype word is unsigned(7 downto 0);
 
   component busses is
@@ -286,7 +278,7 @@ You can save scanned array definitions to a cached file with the ``-s`` option. 
   > symbolator -L my/vhdl/library -L . -s libs.txt
   > symbolator -L libs.txt -i source/path
 
-  
+
 Symbol sections
 ~~~~~~~~~~~~~~~
 
@@ -296,16 +288,16 @@ Each symbol can be split into sections with an optional name and styling class. 
 
   -- Empty section:
   --# {{}}
-  
+
   -- Styled section:
   --# {{clocks|}}
-  
+
   -- Named section:
   --# {{Arbitrary name}}
-  
+
   -- Styled and named:
   --# {{data|Input port}}
-  
+
 The fixed style names are "clocks", "control", and "data". They always have the same fill colors to maintain consistency across symbols. Any other sections are assigned a pastel color from a pseudo-random sequence.
 
 
@@ -315,16 +307,16 @@ The fixed style names are "clocks", "control", and "data". They always have the 
     port (
       --# {{clocks|Clocking}}
       Clock : in std_ulogic;
-      
+
       --# {{control|Control signals}}
       Enable: in std_ulogic;
-      
+
       --# {{data|Data port}}
       Data1 : in std_ulogic;
-      
+
       --# {{Additional port1}}
       Data2 : out std_ulogic;
-      
+
       --# {{}}
       Data3 : inout std_ulogic
     );
@@ -338,16 +330,16 @@ The fixed style names are "clocks", "control", and "data". They always have the 
     port (
       --# {{clocks|Clocking}}
       Clock : in std_ulogic;
-      
+
       --# {{control|Control signals}}
       Enable: in std_ulogic;
-      
+
       --# {{data|Data port}}
       Data1 : in std_ulogic;
-      
+
       --# {{Additional port1}}
       Data2 : out std_ulogic;
-      
+
       --# {{}}
       Data3 : inout std_ulogic
     );
@@ -381,7 +373,7 @@ A Symbolator extension is available for the Sphinx document generation system. I
 .. code-block:: rst
 
   .. symbolator::
-  
+
     component foo is
       ...
     end component;
@@ -419,10 +411,10 @@ Images are named by default with a SHA1 hash of the code and settings used to ge
     :caption: Caption text
     :symbolator_cmd: /usr/local/bin/symbolator
     :name: vlog-example
-  
+
     module vlog
       (foo, bar);
-      
+
       input wire foo;
       output reg bar;
     endmodule;
@@ -436,7 +428,7 @@ Images are named by default with a SHA1 hash of the code and settings used to ge
 
   module vlog
     (foo, bar);
-    
+
     input wire foo;
     output reg bar;
   endmodule;
@@ -459,14 +451,14 @@ symbolator_cmd
 symbolator_cmd_args
 
   List of arguments to pass on each invocation of Symbolator
-  
+
 symbolator_output_format
 
   Change the default output format. Only PNG and SVG are supported by the Sphinx extension.
 
 
 .. code-block:: python
-  
+
   symbolator_cmd = '/usr/local/bin/symbolator'
   symbolator_cmd_args = ['-t', '--scale=0.5']
   symbolator_output_format = 'png'  # 'svg' is other format
@@ -476,4 +468,3 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`search`
-

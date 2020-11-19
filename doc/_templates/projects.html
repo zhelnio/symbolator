@@ -37,7 +37,7 @@ $.each(knownProjects, function(index, v) {
 function insert_projects(projects) {
     var links = [];
     var cur_proj = "{{ project }}".toLowerCase();
-    
+
     $.each(projects, function(key, value) {
       if(key != cur_proj) {
         var title;
@@ -49,7 +49,7 @@ function insert_projects(projects) {
         links.push("<a href='"+ value +"'>" + title + "</a>");
       }
     });
-    
+
     $("#proj_list").html("<p>"+ links.join("<br>") +"</p>");
 }
 
@@ -63,14 +63,14 @@ if(sessionStorage.KTcacheTime && now - sessionStorage.KTcacheTime < 5*60*1000 ) 
       if(!value.fork)
         projects[value.name] = value.homepage;
     });
-    
+
     insert_projects(projects);
-    
+
     // Store data in session cache
     sessionStorage.KTprojects = JSON.stringify(projects);
     var now = new Date().getTime();
     sessionStorage.KTcacheTime = now;
-  });  
+  });
 }
 
 });
