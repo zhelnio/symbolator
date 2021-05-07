@@ -17,7 +17,7 @@ import hdlparse.verilog_parser as vlog
 
 from hdlparse.vhdl_parser import VhdlComponent
 
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 
 
 def xml_escape(txt):
@@ -465,9 +465,11 @@ def reformat_array_params(vo):
 
     # Split any array segment
     pieces = data_type.split('[')
-    if len(pieces) > 1:
+
+    # commented to allow use of SystemVerilog packed arrays on module ports
+    # if len(pieces) > 1:
       # Strip all white space from array portion
-      data_type = '['.join([pieces[0], pieces[1].replace(' ', '')])
+      # data_type = '['.join([pieces[0], pieces[1].replace(' ', '')])
 
     p.data_type = data_type
 
