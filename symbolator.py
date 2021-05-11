@@ -401,6 +401,7 @@ def parse_args():
   parser.add_argument('--no-type', dest='no_type', action='store_true', default=False, help='Omit pin type information')
   parser.add_argument('-v', '--version', dest='version', action='store_true', default=False, help='Symbolator version')
   parser.add_argument('--libname', dest='libname', action='store', default='', help='Add libname above cellname, and move component name to bottom. Works only with --title')
+  parser.add_argument('-c', '--component', dest='component', action='store', default='', help='Output diagram for only one specified component')
 
   args, unparsed = parser.parse_known_args()
 
@@ -568,6 +569,10 @@ def main():
   for source, components in all_components.items():
     for comp, extractor in components:
       comp.name = comp.name.strip('_')
+
+      if args.component != "" and args.component != comp.name:
+        continue
+
       reformat_array_params(comp)
       if source == '<stdin>' or args.output_as_filename:
         fname = args.output
