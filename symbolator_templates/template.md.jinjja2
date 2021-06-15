@@ -1,0 +1,28 @@
+
+# {{module.name}}
+
+![module.name]({{fname}})
+
+{%for desc in module.desc -%}
+{{desc}}
+{% endfor -%}
+
+{% if module.generics %}
+## Parameters
+
+| Name | Description | Default |
+| ---- | ----------- | ------- |
+{% endif -%}
+
+{%for param in module.generics -%}
+| {{param.name}} | {%-for desc in param.desc %} {{desc}} {% endfor -%} | {{param.default_value}} |
+{% endfor %}
+
+## Ports
+
+| Name | Direction | Description |
+| ---- | ----------| ----------- |
+{% for port in module.ports -%}
+| {{port.name}} | {{port.mode}} | {%-for desc in port.desc %} {{desc}} {% endfor -%} |
+{% endfor -%}
+

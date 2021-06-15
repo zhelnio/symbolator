@@ -17,6 +17,8 @@ import hdlparse.verilog_parser as vlog
 
 from hdlparse.vhdl_parser import VhdlComponent
 
+from jinja2 import Environment, PackageLoader, select_autoescape
+
 __version__ = '1.0.3'
 
 
@@ -391,6 +393,8 @@ def parse_args():
   parser.add_argument('-o', '--output', dest='output', action='store', help='Output file')
   parser.add_argument('--output-as-filename', dest='output_as_filename', action='store_true', help='The --output flag will be used directly as output filename')
   parser.add_argument('-f', '--format', dest='format', action='store', default='svg', help='Output format')
+  parser.add_argument('-m', '--markdown', dest='markdown', action='store_true', help='Output markdown doc')
+  parser.add_argument('-M', '--markdown-only', dest='markdown_only', action='store_true', help='Output markdown doc only')
   parser.add_argument('-L', '--library', dest='lib_dirs', action='append',
     default=['.'], help='Library path')
   parser.add_argument('-s', '--save-lib', dest='save_lib', action='store', help='Save type def cache file')
@@ -546,24 +550,25 @@ def main():
   if args.output:
     create_directories(args.output)
 
-  nc = NuCanvas(None)
+  if not args.markdown_only:
+    nc = NuCanvas(None)
 
-  # Set markers for all shapes
-  nc.add_marker('arrow_fwd',
-    PathShape(((0,-4), (2,-1, 2,1, 0,4), (8,0), 'z'), fill=(0,0,0), weight=0),
-    (3.2,0), 'auto', None)
+    # Set markers for all shapes
+    nc.add_marker('arrow_fwd',
+      PathShape(((0,-4), (2,-1, 2,1, 0,4), (8,0), 'z'), fill=(0,0,0), weight=0),
+      (3.2,0), 'auto', None)
 
-  nc.add_marker('arrow_back',
-    PathShape(((0,-4), (-2,-1, -2,1, 0,4), (-8,0), 'z'), fill=(0,0,0), weight=0),
-    (-3.2,0), 'auto', None)
+    nc.add_marker('arrow_back',
+      PathShape(((0,-4), (-2,-1, -2,1, 0,4), (-8,0), 'z'), fill=(0,0,0), weight=0),
+      (-3.2,0), 'auto', None)
 
-  nc.add_marker('bubble',
-    OvalShape(-3,-3, 3,3, fill=(255,255,255), weight=1),
-    (0,0), 'auto', None)
+    nc.add_marker('bubble',
+      OvalShape(-3,-3, 3,3, fill=(255,255,255), weight=1),
+      (0,0), 'auto', None)
 
-  nc.add_marker('clock',
-    PathShape(((0,-7), (0,7), (7,0), 'z'), fill=(255,255,255), weight=1),
-    (0,0), 'auto', None)
+    nc.add_marker('clock',
+      PathShape(((0,-7), (0,7), (7,0), 'z'), fill=(255,255,255), weight=1),
+      (0,0), 'auto', None)
 
   # Render every component from every file into an image
   for source, components in all_components.items():
@@ -583,19 +588,36 @@ def main():
             args.format)
         if args.output:
           fname = os.path.join(args.output, fname)
-      print('Creating symbol for {} "{}"\n\t-> {}'.format(source, comp.name, fname))
-      if args.format == 'svg':
-        surf = SvgSurface(fname, style, padding=5, scale=args.scale)
-      else:
-        surf = CairoSurface(fname, style, padding=5, scale=args.scale)
 
-      nc.set_surface(surf)
-      nc.clear_shapes()
+      # image output
+      if not args.markdown_only:
+        print('Creating symbol for {} "{}"\n\t-> {}'.format(source, comp.name, fname))
+        if args.format == 'svg':
+          surf = SvgSurface(fname, style, padding=5, scale=args.scale)
+        else:
+          surf = CairoSurface(fname, style, padding=5, scale=args.scale)
 
-      sym = make_symbol(comp, extractor, args.title, args.libname, args.no_type)
-      sym.draw(0,0, nc)
+        nc.set_surface(surf)
+        nc.clear_shapes()
 
-      nc.render(args.transparent)
+        sym = make_symbol(comp, extractor, args.title, args.libname, args.no_type)
+        sym.draw(0,0, nc)
+
+        nc.render(args.transparent)
+
+      # doc (markdown) output
+      if args.markdown or args.markdown_only:
+        fname_md = re.sub(args.format+'$', 'md', fname)
+        print('Creating markdown for {} "{}"\n\t-> {}'.format(source, comp.name, fname_md))
+
+        env = Environment(loader=PackageLoader("symbolator_templates",''), autoescape=select_autoescape())
+        template = env.get_template("template.md.jinjja2")
+        doc_txt = template.render(module=comp,fname=fname)
+
+        with open(fname_md, 'w') as doc_file:
+          doc_file.write(doc_txt)
+
+        # print(doc_txt)
 
 if __name__ == '__main__':
   main()

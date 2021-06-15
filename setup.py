@@ -37,7 +37,8 @@ setup(name='symbolator',
     long_description=long_description,
     platforms = ['Any'],
     install_requires = ['hdlparse>=1.0.7'],
-    packages = ['nucanvas', 'nucanvas/color', 'symbolator_sphinx'],
+    packages = ['nucanvas', 'nucanvas/color', 'symbolator_sphinx', 'symbolator_templates'],
+    package_data={'symbolator_templates': ['*', '*/*']},
     py_modules = ['symbolator'],
     entry_points = {
         'console_scripts': ['symbolator = symbolator:main']
