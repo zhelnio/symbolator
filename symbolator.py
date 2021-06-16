@@ -531,7 +531,7 @@ def main():
     # Output is a directory
 
   elif os.path.isdir(args.input):
-    flist = set(file_search(args.input, extensions=('.vhdl', '.vhd', '.vlog', '.v')))
+    flist = set(file_search(args.input, extensions=('.vhdl', '.vhd', '.vlog', '.v', '.sv')))
 
     # Separate file by extension
     vhdl_files = set(f for f in flist if vhdl.is_vhdl(f))
@@ -607,12 +607,17 @@ def main():
 
       # doc (markdown) output
       if args.markdown or args.markdown_only:
-        fname_md = re.sub(args.format+'$', 'md', fname)
+        if args.output_as_filename or args.markdown_only:
+          fname_md  = args.output
+          fname_img = re.sub('md$', args.format, fname_md)
+        else:
+          fname_md  = re.sub(args.format+'$', 'md', fname)
+          fname_img = fname
         print('Creating markdown for {} "{}"\n\t-> {}'.format(source, comp.name, fname_md))
 
         env = Environment(loader=PackageLoader("symbolator_templates",''), autoescape=select_autoescape())
         template = env.get_template("template.md.jinjja2")
-        doc_txt = template.render(module=comp,fname=fname)
+        doc_txt = template.render(module=comp,fname=fname_img)
 
         with open(fname_md, 'w') as doc_file:
           doc_file.write(doc_txt)
