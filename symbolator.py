@@ -609,10 +609,10 @@ def main():
       if args.markdown or args.markdown_only:
         if args.output_as_filename or args.markdown_only:
           fname_md  = args.output
-          fname_img = re.sub('md$', args.format, fname_md)
+          fname_img = re.sub('md$', args.format, os.path.basename(fname_md))
         else:
           fname_md  = re.sub(args.format+'$', 'md', fname)
-          fname_img = fname
+          fname_img = os.path.basename(fname)
         print('Creating markdown for {} "{}"\n\t-> {}'.format(source, comp.name, fname_md))
 
         env = Environment(loader=PackageLoader("symbolator_templates",''), autoescape=select_autoescape())
