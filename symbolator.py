@@ -18,6 +18,7 @@ import hdlparse.verilog_parser as vlog
 from hdlparse.vhdl_parser import VhdlComponent
 
 from jinja2 import Environment, PackageLoader, select_autoescape
+import yaml
 
 __version__ = '1.0.3'
 
@@ -395,6 +396,7 @@ def parse_args():
   parser.add_argument('-f', '--format', dest='format', action='store', default='svg', help='Output format')
   parser.add_argument('-m', '--markdown', dest='markdown', action='store_true', help='Output markdown doc')
   parser.add_argument('-M', '--markdown-only', dest='markdown_only', action='store_true', help='Output markdown doc only')
+  parser.add_argument('-D', '--use-dictionary', dest='markdown_dict', action='store', help='Typical signal & parameter description dictionary (markdown only)')
   parser.add_argument('-L', '--library', dest='lib_dirs', action='append',
     default=['.'], help='Library path')
   parser.add_argument('-s', '--save-lib', dest='save_lib', action='store', help='Save type def cache file')
@@ -477,6 +479,18 @@ def reformat_array_params(vo):
       # data_type = '['.join([pieces[0], pieces[1].replace(' ', '')])
 
     p.data_type = data_type
+
+default_desc_dict = None
+
+def get_description(name):
+  print(name)
+  if default_desc_dict is not None:
+    for nr in default_desc_dict['naming_rules']:
+      for rule in nr['rules']:
+        if re.match(rule, name):
+          print(rule)
+          return nr['value']
+  return ''
 
 def main():
   '''Run symbolator'''
@@ -570,6 +584,12 @@ def main():
       PathShape(((0,-7), (0,7), (7,0), 'z'), fill=(255,255,255), weight=1),
       (0,0), 'auto', None)
 
+  # read default signal & params desc from file
+  if args.markdown_dict:
+    with open(args.markdown_dict, 'r') as stream:
+      global default_desc_dict
+      default_desc_dict = yaml.safe_load(stream)
+
   # Render every component from every file into an image
   for source, components in all_components.items():
     for comp, extractor in components:
@@ -617,7 +637,7 @@ def main():
 
         env = Environment(loader=PackageLoader("symbolator_templates",''), autoescape=select_autoescape())
         template = env.get_template("template.md.jinjja2")
-        doc_txt = template.render(module=comp,fname=fname_img)
+        doc_txt = template.render(module=comp,fname=fname_img,get_description=get_description)
 
         with open(fname_md, 'w') as doc_file:
           doc_file.write(doc_txt)

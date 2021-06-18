@@ -1,0 +1,61 @@
+
+naming_rules:
+
+  # AXI4-Stream
+  - value: Clock source. The global clock signal. All signals are sampled on the rising edge of ACLK
+    rules:
+      - ACLK
+      - clk
+      - aclk
+      - .*_clk
+      - .*_aclk
+  - value: Reset source. The global reset signal.
+    rules:
+      - ARESETn
+      - rst_n
+      - .*_rst_n
+  - value: Master TVALID indicates that the master is driving a valid transfer. A transfer takes place when both TVALID and TREADY are asserted
+    rules:
+      - TVALID
+      - tvalid
+      - .*_tvalid
+  - value: Slave TREADY indicates that the slave can accept a transfer in the current cycle
+    rules:
+      - TREADY
+      - tready
+      - .*_tready
+  - value: Master TDATA is the primary payload that is used to provide the data that is passing across the interface
+    rules:
+      - TDATA
+      - tdata
+      - .*_tdata
+  - value: Master TSTRB is the byte qualifier that indicates whether the content of the associated byte of TDATA is processed as a data byte or a position byte
+    rules:
+      - TSTRB
+      - tstrb
+      - .*_tstrb
+  - value: Master TKEEP is the byte qualifier that indicates whether the content of the associated byte of TDATA is processed as part of the data stream. Associated bytes that have the TKEEP byte qualifier deasserted are null bytes and can be removed from the data stream
+    rules:
+      - TKEEP
+      - tkeep
+      - .*_tkeep
+  - value: Master TLAST indicates the boundary of a packet
+    rules:
+      - 'TLAST'
+      - 'tlast'
+      - '.*_tlast'
+  - value: Master TID is the data stream identifier that indicates different streams of data
+    rules:
+      - 'TID'
+      - 'tid'
+      - '.*_tid'
+  - value: Master TDEST provides routing information for the data stream
+    rules:
+      - 'TDEST'
+      - 'tdest'
+      - '.*_tdest'
+  - value: Master TUSER is user defined sideband information that can be transmitted alongside the data stream
+    rules:
+      - 'TUSER'
+      - 'tuser'
+      - '.*_tuser'

@@ -15,7 +15,7 @@
 {% endif -%}
 
 {%for param in module.generics -%}
-| {{param.name}} | {%-for desc in param.desc %} {{desc}} {% endfor -%} | {{param.default_value}} |
+| {{param.name}} | {%if not param.desc%} {{get_description(param.name)}} {%else%}{%-for desc in param.desc %} {{desc}} {% endfor -%}{%endif%} | {{param.default_value}} |
 {% endfor %}
 
 ## Ports
@@ -23,6 +23,5 @@
 | Name | Direction | Description |
 | ---- | ----------| ----------- |
 {% for port in module.ports -%}
-| {{port.name}} | {{port.mode}} | {%-for desc in port.desc %} {{desc}} {% endfor -%} |
+| {{port.name}} | {{port.mode}} | {%if not port.desc%} {{get_description(port.name)}} {%else%}{%-for desc in port.desc %} {{desc}} {% endfor -%}{%endif%} |
 {% endfor -%}
-

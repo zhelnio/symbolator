@@ -36,7 +36,11 @@ setup(name='symbolator',
     description='HDL symbol generator',
     long_description=long_description,
     platforms = ['Any'],
-    install_requires = ['hdlparse>=1.0.7'],
+    install_requires = [
+        'hdlparse>=1.0.7',
+        'jinja2',
+        'pyyaml'
+    ],
     packages = ['nucanvas', 'nucanvas/color', 'symbolator_sphinx', 'symbolator_templates'],
     package_data={'symbolator_templates': ['*', '*/*']},
     py_modules = ['symbolator'],
