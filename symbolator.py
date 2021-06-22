@@ -483,7 +483,7 @@ def reformat_array_params(vo):
 default_desc_dict = None
 
 def get_description(name):
-  print(name)
+  # print(name)
   if default_desc_dict is not None:
     for nr in default_desc_dict['naming_rules']:
       for rule in nr['rules']:
